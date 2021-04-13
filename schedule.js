@@ -158,9 +158,9 @@ async function fillScheduleData() {
   const data = await api.fetchSchedule(classId, week);
   // animations
   if(defaultPanel.is(':visible')) {
-    await defaultPanel.fadeOut('slow').promise();
+    await defaultPanel.fadeOut('normal').promise();
   } else {
-    await table.find('tbody tr').fadeOut('slow').promise();
+    await table.find('tbody tr').fadeOut('normal').promise();
   }
   // empty previous rows
   table.find('tbody').empty();
@@ -226,7 +226,7 @@ function generateOption(value, text, select) {
  */
 function fillTable(mydata) {
   if (mydata.length <= 0) {
-    $('#default-panel').fadeIn('slow');
+    $('#default-panel').fadeIn('normal');
   } else {
     for (let item of mydata) {
       const date = moment(item.tafel_datum, 'YYYY-MM-DD').format('DD.MM.YYYY');
@@ -258,7 +258,7 @@ function fillTable(mydata) {
 function generateRow(date, weekday, start, end, teacher, subject, room) {
   // create elements
   table.find('tbody')
-      .append($('<tr></tr>').fadeIn('slow')
+      .append($('<tr></tr>').fadeIn('normal')
           .append($('<td></td>').text(date))
           .append($('<td></td>').text(weekday))
           .append($('<td></td>').text(start))
