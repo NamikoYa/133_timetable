@@ -10,7 +10,6 @@ let btn_next;
 let current_date;
 
 $(document).ready(function () {
-  config.clearAll();
   // set variables
   prof_select = $('#prof-select');
   class_select = $('#class-select');
@@ -44,7 +43,7 @@ function handleProfSelect() {
   // empty previous rows and fields
   table.find('tbody').empty();
   weekpicker_input.val('');
-  // enable class select
+  // enable class select and animate
   class_select.prop('disabled', false);
   class_select.effect( "shake", {times:2}, 400 );
   // set and clear localstorage
@@ -135,12 +134,11 @@ async function fillClassData() {
 }
 
 async function fillScheduleData() {
-  $('#default-panel').fadeOut('fast');
+  await $('#default-panel').fadeOut('fast').promise();
   const class_id = class_select.children('option:selected').val();
   const week = weekpicker_input.val();
   // fetch data
   const data = await api.fetchSchedule(class_id, week);
-
   // fills data into table
   fillTable(data);
 }
@@ -207,7 +205,7 @@ function fillTable(mydata) {
 
 // add row to table
 function generateRow(date, weekday, start, end, teacher, subject, room) {
-  // create element
+  // create elements
   table.find('tbody')
       .append($('<tr></tr>').fadeIn('slow')
           .append($('<td></td>').text(date))
