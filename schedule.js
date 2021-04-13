@@ -1,53 +1,53 @@
 import * as api from './api.js';
 import * as config from './config.js';
 
-let prof_select;
-let class_select;
+let profSelect;
+let classSelect;
 let table;
-let weekpicker_input;
-let btn_back;
-let btn_next;
-let current_date;
+let weekpickerInput;
+let btnBack;
+let btnNext;
+let currentDate;
 
 $(document).ready(function () {
   // set variables
-  prof_select = $('#prof-select');
-  class_select = $('#class-select');
+  profSelect = $('#prof-select');
+  classSelect = $('#class-select');
   table = $('#schedule');
-  weekpicker_input = $('#weekpicker input');
-  btn_back = $('#back');
-  btn_next = $('#next');
-  current_date = moment();
+  weekpickerInput = $('#weekpicker input');
+  btnBack = $('#back');
+  btnNext = $('#next');
+  currentDate = moment();
 
   // prepare weekpicker based on local storage
   if (!itemsExist(config.getClass())) {
-    weekpicker_input.val('');
+    weekpickerInput.val('');
   } else {
-    weekpicker_input.val(moment(current_date).format('W-YYYY'));
+    weekpickerInput.val(moment(currentDate).format('W-YYYY'));
   }
   // fill profession options
   fillProfData();
 
   // handle selects
-  prof_select.change(handleProfSelect);
-  class_select.change(handleClassSelect);
+  profSelect.change(handleProfSelect);
+  classSelect.change(handleClassSelect);
   // handle button press
-  btn_back.click(handleBackButton);
-  btn_next.click(handleNextButton);
+  btnBack.click(handleBackButton);
+  btnNext.click(handleNextButton);
   // handle input change
-  weekpicker_input.change(handleWeekPicker);
+  weekpickerInput.change(handleWeekPicker);
 });
 
 // handles professions select
 function handleProfSelect() {
   // empty previous rows and fields
   table.find('tbody').empty();
-  weekpicker_input.val('');
+  weekpickerInput.val('');
   // enable class select and animate
-  class_select.prop('disabled', false);
-  class_select.effect( "shake", {times:2}, 400 );
+  classSelect.prop('disabled', false);
+  classSelect.effect( "shake", {times:2}, 400 );
   // set and clear localstorage
-  config.setProfession(prof_select.children('option:selected').val());
+  config.setProfession(profSelect.children('option:selected').val());
   config.clearClass();
   // fill class options
   fillClassData();
@@ -56,22 +56,22 @@ function handleProfSelect() {
 // handles classes select
 function handleClassSelect() {
   // fill weekpicker
-  weekpicker_input.val(moment(current_date).format('W-YYYY'));
+  weekpickerInput.val(moment(currentDate).format('W-YYYY'));
   // empty previous rows and animate
   table.find('tbody tr').fadeOut('normal');
   table.find('tbody').empty();
   // set localstorage
-  config.setClass(class_select.children('option:selected').val());
+  config.setClass(classSelect.children('option:selected').val());
   // fill table info
   fillScheduleData();
 }
 
 // goes one week back in weekpicker
 function handleBackButton() {
-  if(weekpicker_input.val() != '') {
+  if(weekpickerInput.val() != '') {
     // calculate one week back
-    weekpicker_input.val(moment(current_date).subtract(1, 'week').format('W-YYYY'));
-    current_date = moment(current_date).subtract(1, 'week');
+    weekpickerInput.val(moment(currentDate).subtract(1, 'week').format('W-YYYY'));
+    currentDate = moment(currentDate).subtract(1, 'week');
     // empty previous rows
     table.find('tbody').empty();
     // refill table
@@ -81,10 +81,10 @@ function handleBackButton() {
 
 // goes one week forward in weekpicker
 function handleNextButton() {
-  if(weekpicker_input.val() != '') {
+  if(weekpickerInput.val() != '') {
     // calculate one week forward
-    weekpicker_input.val(moment(current_date).add(1, 'week').format('W-YYYY'));
-    current_date = moment(current_date).add(1, 'week');
+    weekpickerInput.val(moment(currentDate).add(1, 'week').format('W-YYYY'));
+    currentDate = moment(currentDate).add(1, 'week');
     // empty previous rows
     table.find('tbody').empty();
     // refill table
@@ -98,20 +98,20 @@ function handleWeekPicker() {
 }
 
 // check local storage for existing items
-function itemsExist(selected_option) {
-  return selected_option !== null;
+function itemsExist(selectedOption) {
+  return selectedOption !== null;
 }
 
 // get professions data
 async function fillProfData() {
-  const selected_profession = config.getProfession();
+  const selectedProfession = config.getProfession();
   // fetch data
   const data = await api.fetchProfessions();
 
   createProfElementsWith(data);
 
-  if (itemsExist(selected_profession)) {
-    prof_select.val(selected_profession);
+  if (itemsExist(selectedProfession)) {
+    profSelect.val(selectedProfession);
     // fill class options
     fillClassData();
   }
@@ -119,15 +119,15 @@ async function fillProfData() {
 
 // get classes data
 async function fillClassData() {
-  const prof_id = prof_select.children('option:selected').val();
-  const selected_class = config.getClass();
+  const profId = profSelect.children('option:selected').val();
+  const selectedClass = config.getClass();
   // fetch data
-  const data = await api.fetchClass(prof_id);
+  const data = await api.fetchClass(profId);
 
   createClassElementsWith(data);
 
-  if (itemsExist(selected_class)) {
-    class_select.val(selected_class);
+  if (itemsExist(selectedClass)) {
+    classSelect.val(selectedClass);
     // fill table info
     fillScheduleData();
   }
@@ -135,10 +135,10 @@ async function fillClassData() {
 
 async function fillScheduleData() {
   await $('#default-panel').fadeOut('fast').promise();
-  const class_id = class_select.children('option:selected').val();
-  const week = weekpicker_input.val();
+  const classId = classSelect.children('option:selected').val();
+  const week = weekpickerInput.val();
   // fetch data
-  const data = await api.fetchSchedule(class_id, week);
+  const data = await api.fetchSchedule(classId, week);
   // fills data into table
   fillTable(data);
 }
@@ -147,27 +147,27 @@ async function fillScheduleData() {
 function createProfElementsWith(array) {
   // create new options per entry
   for (let item of array) {
-    generateOption(item.beruf_id, item.beruf_name, prof_select);
+    generateOption(item.beruf_id, item.beruf_name, profSelect);
   }
-  prof_select.children('option')[0].selected = true;
+  profSelect.children('option')[0].selected = true;
 }
 
 // creates options for classes
 function createClassElementsWith(array) {
   // clear options
-  class_select.find('option').remove();
+  classSelect.find('option').remove();
   // create new options per entry
   if (array.length <= 0) {
-    generateOption('default', 'No options yet', class_select);
+    generateOption('default', 'No options yet', classSelect);
     // disable class select
-    class_select.prop('disabled', true);
+    classSelect.prop('disabled', true);
   } else {
-    generateOption('default', 'Select Class...', class_select);
+    generateOption('default', 'Select Class...', classSelect);
     for (let item of array) {
-      generateOption(item.klasse_id, item.klasse_name, class_select);
+      generateOption(item.klasse_id, item.klasse_name, classSelect);
     }
   }
-  class_select.children('option')[0].selected = true;
+  classSelect.children('option')[0].selected = true;
 }
 
 // generates options with given values for given selects
