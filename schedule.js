@@ -1,5 +1,5 @@
 import * as api from './api.js';
-import * as config from './config.js';
+import config from './config.js';
 
 // initialize global variables
 let profSelect;
@@ -24,7 +24,7 @@ $(document).ready(function () {
   currentDate = moment();
 
   // prepare weekpicker based on local storage
-  if (!itemsExist(config.getClass())) {
+  if (!config.classExists()) {
     weekpickerInput.val('');
   } else {
     weekpickerInput.val(moment(currentDate).format('W-YYYY'));
@@ -107,19 +107,9 @@ function handleWeekPicker() {
 }
 
 /**
- * checks local storage for existing items
- * @param {string} selectedOption 
- * @returns if element is present
- */
-function itemsExist(selectedOption) {
-  return selectedOption !== null;
-}
-
-/**
  * get professions data and fill select options
  */
 async function fillProfData() {
-  const selectedProfession = config.getProfession();
   // fetch data
   const data = await api.fetchProfessions();
 
@@ -127,8 +117,8 @@ async function fillProfData() {
   createProfElementsWith(data);
 
   // fill class options when local storage exists
-  if (itemsExist(selectedProfession)) {
-    profSelect.val(selectedProfession);
+  if (config.profExists()) {
+    profSelect.val(config.getProfession());
     // fill class options
     fillClassData();
   }
@@ -139,7 +129,6 @@ async function fillProfData() {
  */
 async function fillClassData() {
   const profId = profSelect.children('option:selected').val();
-  const selectedClass = config.getClass();
   // fetch data
   const data = await api.fetchClass(profId);
 
@@ -148,11 +137,11 @@ async function fillClassData() {
 
   // enable class select and animate
   classSelect.prop('disabled', false);
-  if(!itemsExist(selectedClass)) classSelect.effect("shake", {times:2}, 400);
+  if(!config.profExists()) classSelect.effect("shake", {times:2}, 400);
 
   // fill table with data when local storage exists
-  if (itemsExist(selectedClass)) {
-    classSelect.val(selectedClass);
+  if (config.classExists()) {
+    classSelect.val(config.getClass());
     // fill table info
     fillScheduleData();
   }
