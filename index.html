@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
+    <!-- Weekpicker -->
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="./design.css">
+
+    <title>School Schedule</title>
+  </head>
+  <body>
+    <div class="div-content">
+
+      <!-- Fields -->
+      <div class="card text-white bg-dark mb-3">
+        <h5 class="card-header">Stundenplan GIBM</h5>
+        <div class="card-body">
+          <!-- Profession Select -->
+          <div class="div-fifty-left">
+            <select id="prof-select" class="form-select">
+              <option value="default" disabled selected>Select profession</option>
+            </select>
+          </div>
+          <!-- Class Select -->
+          <div class="div-fifty-right">
+            <select disabled id="class-select" class="form-select">
+              <option value="default" disabled selected>No options yet</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Week picker: https://formden.com/blog/date-picker , https://bootstrap-datepicker.readthedocs.io/en/latest/ -->
+      <div id="weekpicker">
+        <button id="back" type="button" class="btn btn-outline-light" class=""><i class="fas fa-arrow-left"></i></button>
+        <input class="form-control" type="text" />
+        <button id="next" type="button" class="btn btn-outline-light"><i class="fas fa-arrow-right"></i></button>
+      </div>
+
+      <!-- Table -->
+      <table id="schedule" class="table table-dark table-hover">
+        <thead>
+          <th class="row-ten">Date</th>
+          <th class="row-ten">Weekday</th>
+          <th class="row-ten">Start</th>
+          <th class="row-ten">End</th>
+          <th class="row-thirty">Teacher</th>
+          <th class="row-twenty">Subject</th>
+          <th class="row-ten">Room</th>
+        </thead>
+        <tbody></tbody>
+      </table>
+
+      <div id="default-panel">
+        <h3><b>Off days</b> or <b>no data</b> found</h3>
+      </div>
+
+    </div>
+
+    <!-- API -->
+    <script src="./api.js" type="module"></script>
+    <!-- jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <!-- Bootstrap Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
+    <!-- moment js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <!-- Functions and Eventhandler -->
+    <script src="./schedule.js" type="module"></script>
+    <script src="./weekpicker.js"></script>
+  </body>
+</html>
