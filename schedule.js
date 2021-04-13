@@ -1,6 +1,7 @@
 import * as api from './api.js';
 import * as config from './config.js';
 
+// initialize global variables
 let profSelect;
 let classSelect;
 let table;
@@ -9,6 +10,9 @@ let btnBack;
 let btnNext;
 let currentDate;
 
+/**
+ * dom is ready function
+ */
 $(document).ready(function () {
   // set variables
   profSelect = $('#prof-select');
@@ -38,7 +42,9 @@ $(document).ready(function () {
   weekpickerInput.change(handleWeekPicker);
 });
 
-// handles professions select
+/**
+ * is invoked when profession changes
+ */
 function handleProfSelect() {
   // empty previous rows and fields
   table.find('tbody').empty();
@@ -53,63 +59,77 @@ function handleProfSelect() {
   fillClassData();
 }
 
-// handles classes select
+/**
+ * is invoked when class changes
+ */
 function handleClassSelect() {
   // fill weekpicker
   weekpickerInput.val(moment(currentDate).format('W-YYYY'));
-  // empty previous rows and animate
-  table.find('tbody tr').fadeOut('normal');
-  table.find('tbody').empty();
   // set localstorage
   config.setClass(classSelect.children('option:selected').val());
   // fill table info
   fillScheduleData();
 }
 
-// goes one week back in weekpicker
+/**
+ * is invoked when back button is pressed
+ */
 function handleBackButton() {
+  // check if value is not empty
   if(weekpickerInput.val() != '') {
-    // calculate one week back
+    // calculate one week back and set input value
     weekpickerInput.val(moment(currentDate).subtract(1, 'week').format('W-YYYY'));
+    // set global date variable
     currentDate = moment(currentDate).subtract(1, 'week');
-    // empty previous rows
-    table.find('tbody').empty();
-    // refill table
+    // fill table
     fillScheduleData();
   }
 }
 
-// goes one week forward in weekpicker
+/**
+ * is invoked when back button is pressed
+ */
 function handleNextButton() {
+  // check if value is not empty
   if(weekpickerInput.val() != '') {
-    // calculate one week forward
+    // calculate one week forward and set input value
     weekpickerInput.val(moment(currentDate).add(1, 'week').format('W-YYYY'));
+    // set global date variable
     currentDate = moment(currentDate).add(1, 'week');
-    // empty previous rows
-    table.find('tbody').empty();
-    // refill table
+    // fill table
     fillScheduleData();
   }
 }
 
-// refilling of table
+/**
+ * is invoked when input value is changed
+ */
 function handleWeekPicker() {
+  // fill table
   fillScheduleData();
 }
 
-// check local storage for existing items
+/**
+ * checks local storage for existing items
+ * @param {string} selectedOption 
+ * @returns if element is present
+ */
 function itemsExist(selectedOption) {
   return selectedOption !== null;
 }
 
-// get professions data
+/**
+ * get professions data and fill select options
+ */
 async function fillProfData() {
   const selectedProfession = config.getProfession();
   // fetch data
   const data = await api.fetchProfessions();
 
+  // create select options
   createProfElementsWith(data);
 
+  // fill class options when local storage exists
   if (itemsExist(selectedProfession)) {
     profSelect.val(selectedProfession);
     // fill class options
@@ -117,15 +137,19 @@ async function fillProfData() {
   }
 }
 
-// get classes data
+/**
+ * get classes data and fill select options
+ */
 async function fillClassData() {
   const profId = profSelect.children('option:selected').val();
   const selectedClass = config.getClass();
   // fetch data
   const data = await api.fetchClass(profId);
 
+  // create select options
   createClassElementsWith(data);
 
+  // fill table with data when local storage exists
   if (itemsExist(selectedClass)) {
     classSelect.val(selectedClass);
     // fill table info
@@ -133,26 +157,44 @@ async function fillClassData() {
   }
 }
 
+/**
+ * fetches data and fills table with data
+ */
 async function fillScheduleData() {
-  await $('#default-panel').fadeOut('fast').promise();
+  const defaultPanel = $('#default-panel');
   const classId = classSelect.children('option:selected').val();
   const week = weekpickerInput.val();
   // fetch data
   const data = await api.fetchSchedule(classId, week);
+  // animations
+  if(defaultPanel.is(':visible')) {
+    await defaultPanel.fadeOut('fast').promise();
+  } else {
+    await table.find('tbody tr').fadeOut('normal').promise();
+  }
+  // empty previous rows
+  table.find('tbody').empty();
   // fills data into table
   fillTable(data);
 }
 
-// creates options for professions
+/**
+ * creates options for profession select
+ * @param {string} array 
+ */
 function createProfElementsWith(array) {
   // create new options per entry
   for (let item of array) {
     generateOption(item.beruf_id, item.beruf_name, profSelect);
   }
+  // select default
   profSelect.children('option')[0].selected = true;
 }
 
-// creates options for classes
+/**
+ * creates options for class select
+ * @param {string} array 
+ */
 function createClassElementsWith(array) {
   // clear options
   classSelect.find('option').remove();
@@ -167,10 +209,16 @@ function createClassElementsWith(array) {
       generateOption(item.klasse_id, item.klasse_name, classSelect);
     }
   }
+  // select default
   classSelect.children('option')[0].selected = true;
 }
 
-// generates options with given values for given selects
+/**
+ * generates options with given values for given select
+ * @param {string} value 
+ * @param {string} text 
+ * @param {*} select 
+ */
 function generateOption(value, text, select) {
   // create element
   let opt = document.createElement('option');
@@ -182,14 +230,18 @@ function generateOption(value, text, select) {
   select.append(opt);
 }
 
-// fills table with given data
+/**
+ * fills table with given data
+ * @param {any[]} mydata
+ */
 function fillTable(mydata) {
   if (mydata.length <= 0) {
     $('#default-panel').fadeIn('normal');
   } else {
     for (let item of mydata) {
-      let date = moment(item.tafel_datum, 'YYYY-MM-DD').format('DD.MM.YYYY');
-      let weekday = moment(date, 'DD.MM.YYYY').format('dddd');
+      const date = moment(item.tafel_datum, 'YYYY-MM-DD').format('DD.MM.YYYY');
+      const weekday = moment(date, 'DD.MM.YYYY').format('dddd');
+      // add row to table
       generateRow(
         date,
         weekday,
@@ -203,7 +255,16 @@ function fillTable(mydata) {
   }
 }
 
-// add row to table
+/**
+ * add row to table with given parameters
+ * @param {string} date
+ * @param {string} weekday
+ * @param {string} start 
+ * @param {string} end 
+ * @param {string} teacher 
+ * @param {string} subject 
+ * @param {string} room 
+ */
 function generateRow(date, weekday, start, end, teacher, subject, room) {
   // create elements
   table.find('tbody')
