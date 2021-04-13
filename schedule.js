@@ -49,9 +49,6 @@ function handleProfSelect() {
   // empty previous rows and fields
   table.find('tbody').empty();
   weekpickerInput.val('');
-  // enable class select and animate
-  classSelect.prop('disabled', false);
-  classSelect.effect( "shake", {times:2}, 400 );
   // set and clear localstorage
   config.setProfession(profSelect.children('option:selected').val());
   config.clearClass();
@@ -149,6 +146,10 @@ async function fillClassData() {
   // create select options
   createClassElementsWith(data);
 
+  // enable class select and animate
+  classSelect.prop('disabled', false);
+  if(!itemsExist(selectedClass)) classSelect.effect("shake", {times:2}, 400);
+
   // fill table with data when local storage exists
   if (itemsExist(selectedClass)) {
     classSelect.val(selectedClass);
@@ -168,9 +169,9 @@ async function fillScheduleData() {
   const data = await api.fetchSchedule(classId, week);
   // animations
   if(defaultPanel.is(':visible')) {
-    await defaultPanel.fadeOut('fast').promise();
+    await defaultPanel.fadeOut('slow').promise();
   } else {
-    await table.find('tbody tr').fadeOut('normal').promise();
+    await table.find('tbody tr').fadeOut('slow').promise();
   }
   // empty previous rows
   table.find('tbody').empty();
@@ -236,7 +237,7 @@ function generateOption(value, text, select) {
  */
 function fillTable(mydata) {
   if (mydata.length <= 0) {
-    $('#default-panel').fadeIn('normal');
+    $('#default-panel').fadeIn('slow');
   } else {
     for (let item of mydata) {
       const date = moment(item.tafel_datum, 'YYYY-MM-DD').format('DD.MM.YYYY');
