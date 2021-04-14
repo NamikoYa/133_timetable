@@ -5,20 +5,20 @@ import config from './config.js';
 let profSelect;
 let classSelect;
 let table;
+let tableOverlay;
 let defaultPanel;
 let weekpickerInput;
 let btnBack;
 let btnNext;
 let currentDate;
 
-/**
- * dom is ready function
- */
 $(document).ready(function () {
+  config.clearAll();
   // set variables
   profSelect = $('#prof-select');
   classSelect = $('#class-select');
   table = $('#schedule');
+  tableOverlay = $('#div-table');
   defaultPanel = $('#default-panel');
   weekpickerInput = $('#weekpicker input');
   btnBack = $('#back');
@@ -65,6 +65,7 @@ $(document).ready(function () {
 function handleProfSelect() {
   // empty previous rows and fields
   table.find('tbody').empty();
+  tableOverlay.hide();
   defaultPanel.hide();
   // disable weekpicker to prevent errors
   weekpickerInput.prop('disabled', true);
@@ -165,7 +166,7 @@ async function fillClassData() {
   // enable class select and animate when data is present
   if(data.length != 0) {
     classSelect.prop('disabled', false);
-    if(!config.classExists()) classSelect.effect("shake", {times:2}, 400);
+    if(!config.classExists()) classSelect.effect( 'bounce', { times: 3 }, 'slow' );
   } else classSelect.prop('disabled', true);
 
   // fill table with data when local storage exists
@@ -186,8 +187,8 @@ async function fillScheduleData() {
   const data = await api.fetchSchedule(classId, week);
   // animations
   if(defaultPanel.is(':visible')) {
-    await defaultPanel.fadeOut('normal').promise();
-  } else await table.find('tbody tr').fadeOut('normal').promise();
+    await defaultPanel.slideUp('normal').promise();
+  } else await tableOverlay.slideUp('normal').promise();
   // empty previous rows
   table.find('tbody').empty();
   // fills data into table
@@ -253,7 +254,7 @@ function generateOption(value, text, select) {
  */
 function fillTable(mydata) {
   if (mydata.length <= 0) {
-    $('#default-panel').fadeIn('normal');
+    $('#default-panel').slideDown('normal');
   } else {
     for (let item of mydata) {
       const date = moment(item.tafel_datum, 'YYYY-MM-DD').format('DD.MM.YYYY');
@@ -285,7 +286,7 @@ function fillTable(mydata) {
 function generateRow(date, weekday, start, end, teacher, subject, room) {
   // create elements
   table.find('tbody')
-      .append($('<tr></tr>').fadeIn('normal')
+      .append($('<tr></tr>')
           .append($('<td></td>').text(date))
           .append($('<td></td>').text(weekday))
           .append($('<td></td>').text(start))
@@ -294,4 +295,6 @@ function generateRow(date, weekday, start, end, teacher, subject, room) {
           .append($('<td></td>').text(subject))
           .append($('<td></td>').text(room))
       )
+  //display table
+  tableOverlay.slideDown('normal');
 }
