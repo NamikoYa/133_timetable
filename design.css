@@ -15,11 +15,11 @@ body {
     width: 49%;
     float: right;
 }
+
+/* table */
 table {
     margin-top: 2%;
 }
-
-/* row */
 .row-ten {
     width: 10%;
 }
@@ -28,14 +28,6 @@ table {
 }
 .row-thirty {
     width: 30%;
-}
-
-/* spinner */
-#spinner {
-    width: 3rem;
-    height: 3rem;
-    margin-top: 2%;
-    display: none;
 }
 
 /* week picker */
@@ -48,6 +40,11 @@ table {
 #weekpicker input {
     width: 11%;
     margin: 0 2%;
+}
+#weekpicker input:disabled {
+    color: gray;
+    background-color: rgb(220, 220, 220);
+    border: rgb(190, 190, 190);
 }
 #weekpicker button {
     border: 2px solid white;
