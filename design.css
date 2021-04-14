@@ -1,7 +1,31 @@
+
 /* general */
 body {
+    /* pineapple background */
+    background:
+    radial-gradient(circle closest-side at 50px 50px, #fb8b24 3px, transparent 0),
+    radial-gradient(circle closest-side at 40px 60px, #fb8b24 3px, transparent 0),
+    radial-gradient(circle closest-side at 60px 60px, #fb8b24 3px, transparent 0),
+    radial-gradient(circle closest-side at 50px 70px, #fb8b24 3px, transparent 0),
+    radial-gradient(circle closest-side at 150px 165px, #fb8b24 3px, transparent 0),
+    radial-gradient(circle closest-side at 140px 175px, #fb8b24 3px, transparent 0),
+    radial-gradient(circle closest-side at 160px 175px, #fb8b24 3px, transparent 0),
+    radial-gradient(circle closest-side at 150px 185px, #fb8b24 3px, transparent 0),
+    radial-gradient(ellipse closest-side at 50px 60px, #f9a734 18px, transparent 0),
+    radial-gradient(ellipse closest-side at 150px 175px, #f9a734 18px, transparent 0),
+    radial-gradient(circle closest-side at 30px 40px, #2f3136 15px, transparent 0),
+    radial-gradient(circle closest-side at 40px 35px, #36964c 15px, transparent 0),
+    radial-gradient(circle closest-side at 70px 40px, #2f3136 15px, transparent 0),
+    radial-gradient(circle closest-side at 60px 35px, #286e38 15px, transparent 0),
+    radial-gradient(circle closest-side at 130px 155px, #2f3136 15px, transparent 0),
+    radial-gradient(circle closest-side at 140px 150px, #36964c 15px, transparent 0),
+    radial-gradient(circle at 170px 155px, #2f3136 15px, transparent 0),
+    radial-gradient(circle at 160px 150px, #286e38 15px, transparent 0);
     background-color: #2f3136;
+    background-size: 180px 210px;
+    animation: animatedBackground 0.5s cubic-bezier(0.61, -0.64, 0.58, 1.46) forwards;
 }
+
 .div-content {
     padding: 5% 10%;
 }
@@ -17,7 +41,8 @@ body {
 }
 
 /* table */
-table {
+#div-table {
+    display: none;
     margin-top: 2%;
 }
 .row-ten {
@@ -51,10 +76,17 @@ table {
     border-radius: 50%;
 }
 
-/* default panel */
+/* default panels */
 #default-panel {
+    padding: 10% 0;
+    text-align: center;
+    color: rgb(240, 240, 240);
+    background-color: #212529; 
+}
+#empty-panel {
     display: none;
     padding: 10% 0;
     text-align: center;
-    background-color: rgb(151, 145, 135);
+    color: rgb(240, 240, 240);
+    background-color: #212529;
 }
