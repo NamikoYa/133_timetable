@@ -14,7 +14,6 @@ let btnNext;
 let currentDate;
 
 $(document).ready(function () {
-  // config.clearAll();
   // set variables
   profSelect = $('#prof-select');
   classSelect = $('#class-select');
