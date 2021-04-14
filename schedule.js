@@ -7,19 +7,21 @@ let classSelect;
 let table;
 let tableOverlay;
 let defaultPanel;
+let emptyPanel;
 let weekpickerInput;
 let btnBack;
 let btnNext;
 let currentDate;
 
 $(document).ready(function () {
-  config.clearAll();
+  // config.clearAll();
   // set variables
   profSelect = $('#prof-select');
   classSelect = $('#class-select');
   table = $('#schedule');
   tableOverlay = $('#div-table');
   defaultPanel = $('#default-panel');
+  emptyPanel = $('#empty-panel');
   weekpickerInput = $('#weekpicker input');
   btnBack = $('#back');
   btnNext = $('#next');
@@ -63,10 +65,12 @@ $(document).ready(function () {
  * is invoked when profession changes
  */
 function handleProfSelect() {
-  // empty previous rows and fields
+  // empty previous rows and hide fields
   table.find('tbody').empty();
   tableOverlay.hide();
-  defaultPanel.hide();
+  emptyPanel.hide();
+  // show default panel
+  defaultPanel.slideDown('normal');
   // disable weekpicker to prevent errors
   weekpickerInput.prop('disabled', true);
   // disable buttons
@@ -166,7 +170,7 @@ async function fillClassData() {
   // enable class select and animate when data is present
   if(data.length != 0) {
     classSelect.prop('disabled', false);
-    if(!config.classExists()) classSelect.effect( 'bounce', { times: 3 }, 'slow' );
+    if(!config.classExists()) classSelect.effect('bounce', {times: 3}, 'normal');
   } else classSelect.prop('disabled', true);
 
   // fill table with data when local storage exists
@@ -186,9 +190,8 @@ async function fillScheduleData() {
   // fetch data
   const data = await api.fetchSchedule(classId, week);
   // animations
-  if(defaultPanel.is(':visible')) {
-    await defaultPanel.slideUp('normal').promise();
-  } else await tableOverlay.slideUp('normal').promise();
+  if(emptyPanel.is(':visible')) await emptyPanel.slideUp('normal').promise();
+  else await tableOverlay.slideUp('normal').promise();
   // empty previous rows
   table.find('tbody').empty();
   // fills data into table
@@ -253,8 +256,9 @@ function generateOption(value, text, select) {
  * @param {any[]} mydata
  */
 function fillTable(mydata) {
+ defaultPanel.hide();
   if (mydata.length <= 0) {
-    $('#default-panel').slideDown('normal');
+    emptyPanel.slideDown('normal');
   } else {
     for (let item of mydata) {
       const date = moment(item.tafel_datum, 'YYYY-MM-DD').format('DD.MM.YYYY');
